@@ -128,12 +128,12 @@ public class TestHLLWritable {
     
     HLLCounter hll0 = new HLLCounter(true);
     for (int i=0; i<1000000; i++) {
-      hll0.put(Hashing.md5().hashString(Integer.toString(i)).toString());
+      hll0.put(Hashing.murmur3_128().hashString(Integer.toString(i), java.nio.charset.StandardCharsets.UTF_8).toString());
     }
 
     HLLCounter hll1 = new HLLCounter(true);
     for (int i=10000; i<1100000; i++) {
-      hll1.put(Hashing.md5().hashString(Integer.toString(i)).toString());
+      hll1.put(Hashing.murmur3_128().hashString(Integer.toString(i), java.nio.charset.StandardCharsets.UTF_8).toString());
     }
     HLLWritable hllw = new HLLWritable(hll0);
     hllw.write(out);
@@ -148,7 +148,7 @@ public class TestHLLWritable {
     HLLWritable deser1 = new HLLWritable();
     deser1.readFields(in);
     
-    assertEquals(998974, HLLCounter.intersect(deser0.get(), deser1.get()));
+    assertEquals(992228, HLLCounter.intersect(deser0.get(), deser1.get()));
   }
   
   @Test
